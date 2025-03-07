@@ -8,6 +8,7 @@ from ftfy import fix_text
 
 from transformers import AutoConfig, AutoModel, AutoModelForCausalLM, AutoTokenizer, PretrainedConfig, PreTrainedModel
 from transformers import VisionEncoderDecoderConfig, VisionEncoderDecoderModel
+from transformers.models.vision_encoder_decoder.modeling_vision_encoder_decoder import logger as base_model_logger
 
 from .unimer_swin import UnimerSwinConfig, UnimerSwinModel, UnimerSwinImageProcessor
 from .unimer_mbart import UnimerMBartConfig, UnimerMBartForCausalLM
@@ -82,7 +83,12 @@ class UnimernetModel(VisionEncoderDecoderModel):
         encoder: Optional[PreTrainedModel] = None,
         decoder: Optional[PreTrainedModel] = None,
     ):
-        super().__init__(config, encoder, decoder)
+        # VisionEncoderDecoderModel's checking log has bug, disable for temp.
+        base_model_logger.disabled = True
+        try:
+            super().__init__(config, encoder, decoder)
+        finally:
+            base_model_logger.disabled = False
 
         if not config or not hasattr(config, "_name_or_path"):
             raise RuntimeError("config._name_or_path is required by UnimernetModel.")
@@ -119,7 +125,7 @@ class UnimernetModel(VisionEncoderDecoderModel):
 
         # load model weights
         model_file_path = os.path.join(model_path, model_filename)
-        checkpoint = torch.load(model_file_path, map_location="cpu")
+        checkpoint = torch.load(model_file_path, map_location="cpu", weights_only=True)
         state_dict = checkpoint["model"] if "model" in checkpoint else checkpoint
         if not state_dict:
             raise RuntimeError("state_dict is empty.")
@@ -180,3 +186,4 @@ class UnimernetModel(VisionEncoderDecoderModel):
         pred_str = self.tokenizer.token2str(outputs)
         fixed_str = [latex_rm_whitespace(s) for s in pred_str]
         return {"pred_ids": outputs, "pred_tokens": pred_tokens, "pred_str": pred_str, "fixed_str": fixed_str}
+

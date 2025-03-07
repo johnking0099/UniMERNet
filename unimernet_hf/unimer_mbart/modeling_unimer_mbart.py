@@ -41,7 +41,7 @@ from transformers.modeling_outputs import (
     Seq2SeqQuestionAnsweringModelOutput,
     Seq2SeqSequenceClassifierOutput,
 )
-from transformers.modeling_utils import PreTrainedModel
+from transformers import GenerationMixin, PreTrainedModel
 from transformers.utils import (
     add_code_sample_docstrings,
     add_end_docstrings,
@@ -1691,7 +1691,7 @@ class UnimerMBartModel(UnimerMBartPreTrainedModel):
     "The MBART Model with a language modeling head. Can be used for summarization, after fine-tuning the pretrained models.",
     MBART_START_DOCSTRING,
 )
-class UnimerMBartForConditionalGeneration(UnimerMBartPreTrainedModel):
+class UnimerMBartForConditionalGeneration(UnimerMBartPreTrainedModel, GenerationMixin):
     base_model_prefix = "model"
     _keys_to_ignore_on_load_missing = ["final_logits_bias"]
     _tied_weights_keys = ["model.encoder.embed_tokens.weight", "model.decoder.embed_tokens.weight", "lm_head.weight"]
@@ -2132,7 +2132,7 @@ class UnimerMBartDecoderWrapper(UnimerMBartPreTrainedModel):
 
 
 # Copied from transformers.models.bart.modeling_bart.BartForCausalLM with Bart->MBart, facebook/bart-base->facebook/mbart-large-cc25
-class UnimerMBartForCausalLM(UnimerMBartPreTrainedModel):
+class UnimerMBartForCausalLM(UnimerMBartPreTrainedModel, GenerationMixin):
     _tied_weights_keys = ["lm_head.weight"]
 
     def __init__(self, config):
