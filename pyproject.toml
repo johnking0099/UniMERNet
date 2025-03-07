@@ -7,13 +7,9 @@ readme = "README.md"
 license = "Apache License 2.0"
 repository = "https://github.com/opendatalab/UniMERNet"
 keywords = ["MER", "latex", "markdown", "pdf"]
-include = [
-    "train.py",
-    "test.py",
-    "demo.py",
-    "unimernet_app.py",
-    "run_unimernet_app.py",
-    "unimernet_hf",
+packages = [
+    { include = "unimernet" },
+    { include = "unimernet_hf" },
 ]
 
 [tool.poetry.dependencies]
