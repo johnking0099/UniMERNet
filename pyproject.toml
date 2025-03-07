@@ -13,6 +13,7 @@ include = [
     "demo.py",
     "unimernet_app.py",
     "run_unimernet_app.py",
+    "unimernet_hf",
 ]
 
 [tool.poetry.dependencies]
@@ -24,7 +25,7 @@ matplotlib = "^3.8.4"
 iopath = "^0.1.9"
 timm = "^0.9.16"
 opencv-python = "^4.6.0"
-transformers = "4.42.4"
+transformers = ">=4.46.0"
 fairscale = "^0.4.13"
 # ftfy = "^6.2.0"
 ftfy = {version = "^6.2.0", python = ">=3.10,<4.0"}
